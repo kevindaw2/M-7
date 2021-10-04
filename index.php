@@ -124,23 +124,116 @@
                 echo "Numero total de paises $arrlength <br>";
 
                 foreach ($paises as $capitales => $capital) {
-                 
-                    echo "La capital de $capitales es $capital\n"; 
+
+                    echo "La capital de $capitales es $capital\n";
                 }
             }
 
             paisesyCapitales();
+
+            echo "<br>";
+
+            function dibuixaAsteriscs() {
+
+                $n = 5; //nombre de columnes que te la piramide
+
+                for ($x = 0; $x <= $n; $x++) {
+                    for ($j = 0; $j < $x; $j++) {
+                        echo "*"; //imprime *, salta con br y vuelve a imprimir ** 
+                    }
+                    echo "<br>"; //salto de linea 
+                }
+
+                for ($x = $n; $x >= 0; $x--) {//desde 5 a 0 
+                    for ($j = 1; $j <= $x; $j++) {
+                        echo "*"; //imprime *m salta y vuelve a imprimir * 
+                    }
+                    echo "<br>"; //salto de linea 
+                }
+            }
+
+            dibuixaAsteriscs();
+
+            //ORDENACIO D'ARRAYS//
+            /*
+              de menor a major i de major a menor per claus (keys)
+             *  de menor a major i de major a menor per valors (values)
+             *             
+             */
+
+            function ordenaArrays() {
+
+                $fruites = array("3 lemon", "2 orange", "1 strawberry", "9 watermelon");
+
+                /*
+                  sort($fruites); // sort ordena la matriu de menor a major
+                  rsort($fruites); //rsort ordena la matriu de major a menor, asigna noves claus pels elements de la matriu, elimina totes les claus existents
+                  asort($fruites);  //asort ordena la matriu mantenin la relacio dels indexs amb els elements de la matriu, principalment per ordenar valors reals significatius
+                  arsort($fruites); //arsort ordena la matriu segons els ultims valors pasats
+                  ksort($fruites); // ksort ordena una matriu per clau, mantenin la clau, util per arrays associatives
+                  krsort($fruites); //krsort ordena al reves que ksort
+                 *                  */
+
+                natsort($fruites); //natsort ordena cadenes alfanumeriques amb un ornden natrual, 1,2,3,4
+                
+                echo "\n Natural order sorting\n";print_r($fruites); 
+                echo "<br>"; 
+               
+                function print_caps(Iterator $iterator) { //function imprime en mayusculas 
+                    echo strtoupper($iterator->current()) . "\n";
+                    return TRUE;
+                }
+
+                $it = new ArrayIterator($fruites); //creacio objecte per iterar l'array
+                iterator_apply($it, "print_caps", array($it)); //LEMON ORANGE STRAWEBERRY WATERMELON
+            }
+ 
+            ordenaArrays();
             
-            
-            function afegirElementArray () {
-                $array = array("1", "2", "3", "4", "5");
-                echo $array; 
+            function ordenaClausArray () {
+                echo "<br>";
+                                
+                $fruites = array("lemon"=>"3", "orange" =>"9", "strawberry"=>"10", "watermelon"=>"6");
+                ksort($fruites);
+                
+                echo "keys: lemon, orange, strawberry, watermelon <br>";
+                echo "\n Array ordenada per claus de menor a major [l][o][s] ";print_r($fruites);
+                
+                krsort($fruites); 
+                
+                echo "keys: lemon, orange, strawberry, watermelon";
+                echo "\n Array ordenada per claus de major a menor [w][s][l]"; print_r($fruites);
             }
             
-            afegirElementArray(); 
+            function ordenaValorsArray (){
+                echo '<br>';
+                
+                $personas = array("Pedro"=>"23","Juan"=>"55", "Carlos"=>"29");
+                natsort($personas); 
+                
+                echo "\n Array ordenada por valores de menor a mayor\n"; print_r($personas);
+                
+                arsort($personas); 
+                echo "\n Array ordenada por valores de menor a mayor\n"; print_r($personas); 
+            }
+           
+            ordenaClausArray();
+            ordenaValorsArray(); 
             
+            function comprovaMinuscules ($str) {
+                
+                for($x = 0; $x < strlen($str); $x++){ //itera en cada letra de la frase 
+                    echo $str[$x]; //vocal de la frase
+                    if(ord($str[$x]) >= 'A' && ord($str[$x]) <= 'Z'){
+                        echo "no hi han mayuscules "; 
+                        
+                    } else {
+                        echo "hi han minusucules";
+                    }
+                }
+            }
+            comprovaMinuscules("abcdefgh"); 
             ?>
-
 
         </p>
 
