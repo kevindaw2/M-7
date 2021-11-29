@@ -1,59 +1,94 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>BBDD</title>
-        <link rel="stylesheet" href="\adbd\css\styles.css"/>
+        <title>PHP BBDD</title>
+        <style>
+            table, th, td {
+                border:1px solid black;
+            }
+        </style>
     </head>
+
     <body>
-        <h2>Altas, Bajas y Consultas</h2>
-        <?php
-        /* establecer la connexio */
+        <h2>ALTAS BAJAS Y CONSULTAS</h2>
+        <table>
+            <tr BGCOLOR="#6D8FFF">
+                <td>id</td>
+                <td>Nombre</td>
+                <td>Apellido</td>
+                <td>Sexo</td>
+                <td>Fecha Nacimiento</td>
+                <td>Editar</td>
+                <td>Eliminar</td>
+            </tr>
 
-        $servername = "localhost";
-        $username = "root";
-        $password = "";
-        $databasename = "phpadbd";
+            <?php
+            
+            if (isset($_GET['editar'])) {
+                editar($_GET['editar']);
+            }
+            /* Establecer conexion */
+            $servername = "localhost";
+            $username = "root";
+            $dbname = "phpadbd";
 
-        try {
-            /*
-              $conn = new PDO
-             */
-            $conn = new PDO("mysql:host=$servername;dbname=phpadbd", $username, $password);
-            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            echo "Connexio establerta<br></br>";
-        } catch (PDOException $e) {
-            echo "Connection failed: " . $e->getMessage();
-        }
+            try {
+                $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username, '');
 
-        /* mostra les dades de la BBDD */
+                $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+                $pdo->exec("SET CHARACTER SET utf8");
 
-        echo "<table class='tb'>";
-        
-        echo "<tr>";
-            echo "<th>Id</th>";
-            echo "<th>Nombre</th>";
-        echo "</tr>";
+                $sql = "SELECT ID, NOMBRE, APELLIDO, SEXO, FECHANACIMIENTO FROM EMPLEADOS";
 
-        $rowCount = 0;
-        $sql = "SELECT * FROM empleados";
-        
-        foreach ($conn->query($sql) as $row) {
-            $id = $row['id'];
-            $nombre = $row['Nombre']; 
-            $apellidos = $row['Apellido']; 
-            $rowCount++;
-            echo "<td>"; 
-                echo $id ;
-            echo "</td>";
-            echo "<td>"; 
-                echo $nombre ;
-            echo "</td>";
-        } 
- 
-        echo "</table>";
-        /* tancar la connexio */
-        $conn = null;
-        ?> 
-    </body> 
+                $resultado = $pdo->prepare($sql);
+                $resultado->execute();
+
+                while ($registro = $resultado->fetch(PDO::FETCH_ASSOC)) {
+                    echo "<tr id=" . $registro["ID"] . ">" . //id para el row
+                    "<td>" . $registro["ID"] . "</td>" . //a partir del ID edita/elimina el ROW entero
+                    "<td>" . $registro["NOMBRE"] . "</td>" .
+                    "<td>" . $registro["APELLIDO"] . "</td>" .
+                    "<td>" . $registro["SEXO"] . "</td>" .
+                    "<td>" . $registro["FECHANACIMIENTO"] . "</td>" .
+                    "<td><a href='?editar=" . $registro["ID"] . ">Editar</a></td>" . //function editar this.row
+                    "<td><a href='#'>Eliminar</a></td>" . //function eliminar this.row
+                    "</tr>";
+                } $resultado->closeCursor();
+
+                print("\n");
+            } catch (Exception $e) {
+                echo "Connection failed: " . $e->getMessage();
+            }
+
+            function Editar($id) {
+                
+                /*INSERT Y UPDATE de los datos nuevos*/
+
+                try {
+                    $sqlInsert = "INSERT INTO EMPLEADOS VALUES (?, ?, ?, ?, ?) WHERE ID=".$id";";
+                    $paramsInsert = array('Kevin', 'Guva', 1, 'fecha'); /* vars dentro del array */
+                } catch (Exception $ex) {
+                    
+                }
+            }
+            
+            ?>
+
+        </table>
+        <br>
+
+        <div class="container">
+
+            <form action="" method="post">
+                <p>Datos del nuevo empleado</p>
+                <p>Nombre: <input type="text" name="nombre" /></p>
+                <p>Apellido: <input type="text" name="apellido" /></p>
+                <p>Sexo: <input type="text" name="sexo" /></p>
+                <p>Fecha Nacimiento: <input type="text" name="fechaNacimiento" /></p>
+                <p><input type="submit" /></p>
+            </form>
+        </div>
+
+    </body>
 </html>
